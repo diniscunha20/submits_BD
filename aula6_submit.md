@@ -284,37 +284,65 @@ FROM sales inner JOIN titles ON sales.title_id = titles.title_id inner JOIN publ
 ##### *a)*
 
 ```
-... Write here your answer ...
+SELECT DDL_Prescricoes.paciente.nome 
+FROM DDL_Prescricoes.paciente 
+LEFT JOIN DDL_Prescricoes.prescricao on DDL_Prescricoes.paciente.numUtente = DDL_Prescricoes.prescricao.numUtente
+WHERE DDL_Prescricoes.prescricao.numUtente IS NULL;
 ```
 
 ##### *b)* 
 
 ```
-... Write here your answer ...
+SELECT DDL_Prescricoes.medico.especialidade, COUNT(DDL_Prescricoes.prescricao.numPresc) AS cout_numPresc
+FROM DDL_Prescricoes.medico 
+JOIN DDL_Prescricoes.prescricao on DDL_Prescricoes.medico.numSNS = DDL_Prescricoes.prescricao.numMedico
+GROUP BY DDL_Prescricoes.medico.especialidade;
 ```
 
 
 ##### *c)* 
 
 ```
-... Write here your answer ...
+SELECT DDL_Prescricoes.farmacia.nome, COUNT(DDL_Prescricoes.prescricao.numPresc) AS cout_numPresc
+FROM DDL_Prescricoes.farmacia join DDL_Prescricoes.prescricao on DDL_Prescricoes.farmacia.nome = DDL_Prescricoes.prescricao.farmacia
+GROUP BY DDL_Prescricoes.farmacia.nome;
 ```
 
 
 ##### *d)* 
 
 ```
-... Write here your answer ...
+(
+  SELECT DDL_Prescricoes.farmaco.nome
+  FROM DDL_Prescricoes.farmaco
+  WHERE DDL_Prescricoes.farmaco.numRegFarm = 906
+)
+EXCEPT
+(
+  SELECT DDL_Prescricoes.presc_farmaco.nomeFarmaco
+  FROM DDL_Prescricoes.presc_farmaco
+  WHERE DDL_Prescricoes.presc_farmaco.numRegFarm = 906
+);
 ```
 
 ##### *e)* 
 
 ```
-... Write here your answer ...
+SELECT 
+  F.nome AS farmacia, FA.nome AS farmaceutica, 
+  COUNT(FA.nome) AS count_farm
+FROM DDL_Prescricoes.prescricao P
+JOIN DDL_Prescricoes.farmacia F ON P.farmacia = F.nome
+JOIN DDL_Prescricoes.presc_farmaco PF ON P.numPresc = PF.numPresc
+JOIN DDL_Prescricoes.farmaceutica FA ON PF.numRegFarm = FA.numReg
+GROUP BY F.nome, FA.nome;
 ```
 
 ##### *f)* 
 
 ```
-... Write here your answer ...
+SELECT DDL_Prescricoes.paciente.nome 
+FROM DDL_Prescricoes.paciente join DDL_Prescricoes.prescricao on DDL_Prescricoes.paciente.numUtente = DDL_Prescricoes.prescricao.numUtente join DDL_Prescricoes.medico on DDL_Prescricoes.prescricao.numMedico = DDL_Prescricoes.medico.numSNS
+GROUP BY DDL_Prescricoes.paciente.numUtente, DDL_Prescricoes.paciente.nome
+HAVING COUNT(DDL_Prescricoes.medico.numSNS) > 1;
 ```
