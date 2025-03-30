@@ -180,55 +180,100 @@ FROM sales inner JOIN titles ON sales.title_id = titles.title_id inner JOIN publ
 ##### *a)*
 
 ```
-... Write here your answer ...
+SELECT employee.Ssn, employee.Fname, employee.Minit, employee.Lname, project.Pname
+FROM 
+	Company.employee JOIN Company.works_on ON employee.Ssn=works_on.Essn
+		  			JOIN Company.project ON works_on.Pno=project.Pnumber
 ```
 
 ##### *b)* 
 
 ```
-... Write here your answer ...
+SELECT employee.Fname, employee.Minit, employee.Lname
+FROM 
+	Company.employee JOIN 
+				(SELECT employee.Ssn AS Carlos
+					FROM Company.employee
+					WHERE employee.Fname='Carlos' AND employee.Minit='D' AND Lname='Gomes') AS C
+    ON employee.Super_ssn=C.Carlos
 ```
 
 ##### *c)* 
 
 ```
-... Write here your answer ...
+SELECT Projeto.Pname, Tempo.Total
+FROM Company.project AS Projeto JOIN (SELECT works_on.Pno , SUM(Hours_) as Total
+												FROM Company.works_on
+												GROUP BY works_on.Pno) AS Tempo
+			ON Projeto.Pnumber = Tempo.Pno
 ```
 
 ##### *d)* 
 
 ```
-... Write here your answer ...
+SELECT employee.Fname, employee.Minit, employee.Lname
+FROM 
+	Company.employee JOIN Company.works_on 
+	ON employee.Ssn=works_on.Essn
+WHERE employee.Dno=3 AND works_on.Hours_>20
 ```
 
 ##### *e)* 
 
 ```
-... Write here your answer ...
+SELECT employee.Fname,	employee.Minit, employee.Lname
+FROM 
+	Company.employee LEFT JOIN Company.works_on
+	ON employee.Ssn=works_on.Essn
+WHERE works_on.Essn IS NULL
 ```
 
 ##### *f)* 
 
 ```
-... Write here your answer ...
+SELECT Dname, avg(Salary) AS salario  
+FROM 
+	Company.employee JOIN Company.department
+	ON employee.Dno = department.Dnumber
+WHERE employee.Sex='F'
+GROUP BY Dname
 ```
 
 ##### *g)* 
 
 ```
-... Write here your answer ...
+SELECT employee.Ssn, employee.Fname, employee.Minit, employee.Lname, COUNT(employee.Ssn) AS total
+FROM 
+	Company.employee JOIN Company.dependent_
+	ON employee.Ssn=dependent_.Essn
+GROUP BY employee.Ssn, employee.Fname, employee.Minit, employee.Lname
+HAVING count(employee.Ssn) > 2
 ```
 
 ##### *h)* 
 
 ```
-... Write here your answer ...
+SELECT Ssn, Fname, Minit, Lname
+FROM Company.dependent_ RIGHT JOIN (SELECT Ssn, Fname, Minit, Lname
+	FROM Company.employee JOIN Company.department ON Ssn = Mgr_ssn) AS F
+	ON Ssn = Essn
+WHERE Essn IS NULL
 ```
 
 ##### *i)* 
 
 ```
-... Write here your answer ...
+SELECT DISTINCT Fname, Lname, Address_
+FROM 
+	Company.employee JOIN Company.works_on
+	ON Ssn=Essn
+	JOIN Company.project
+	ON Pnumber=Pno
+	JOIN Company.department
+	ON Dno=Dnum
+	JOIN Company.dept_locations
+	ON Dno=Dnum
+WHERE Plocation='Aveiro' AND Dlocation!='Aveiro'
 ```
 
 ### 5.2
@@ -246,27 +291,52 @@ FROM sales inner JOIN titles ON sales.title_id = titles.title_id inner JOIN publ
 ##### *a)*
 
 ```
-... Write here your answer ...
+SELECT fornecedor.nif, fornecedor.nome
+FROM Stock.ecomenda 
+RIGHT OUTER JOIN Stock.fornecedor on ecomenda.NIF_Fornecedor = fornecedor.NIF
+WHERE ecomenda.N_Encomenda is NULL
 ```
 
 ##### *b)* 
 
 ```
-... Write here your answer ...
+SELECT produto.nome, AVG(item.unidades) AS avg_units
+FROM Stock.produto 
+JOIN Stock.item ON produto.codigo = item.Codigo
+GROUP BY produto.nome
 ```
 
 
 ##### *c)* 
 
 ```
-... Write here your answer ...
+SELECT AVG(CAST(contagem.total AS FLOAT)) AS media
+FROM (
+  SELECT N_Encomenda, COUNT(*) AS total
+  FROM Stock.item
+  GROUP BY N_Encomenda
+) AS contagem;
+
 ```
 
 
 ##### *d)* 
 
 ```
-... Write here your answer ...
+SELECT 
+    fornecedor.nome, 
+    produto.nome, 
+    COUNT(produto.nome) AS contagem 
+FROM 
+    Stock.fornecedor
+		JOIN 
+				Stock.ecomenda ON fornecedor.NIF = ecomenda.NIF_Fornecedor
+		JOIN 
+				Stock.item ON item.N_Encomenda = ecomenda.N_Encomenda
+		JOIN 
+				Stock.produto ON item.Codigo = produto.codigo
+GROUP BY 
+    fornecedor.nome, produto.nome
 ```
 
 ### 5.3
