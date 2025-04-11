@@ -26,21 +26,28 @@ It is possible to <u>underline</u> -> {A, B,.. }
 ### *a)*
 
 ```
-... Write here your answer ...
+A chave é {A, B}
 ```
 
 
 ### *b)* 
 
 ```
-... Write here your answer ...
+R1 = {A, B, C}
+R2 = {A, D, E, I, J}
+R3 = {B, F, G, H}
 ```
 
 
 ### *c)* 
 
 ```
-... Write here your answer ...
+R1 = {A, B, C}
+R2 = {A, D, E}
+R3 = {D, I, J}
+R4 = {B, F}
+R5 = {F, G, H}
+
 ```
 
 
@@ -49,21 +56,25 @@ It is possible to <u>underline</u> -> {A, B,.. }
 ### *a)*
 
 ```
-... Write here your answer ...
+A chave é {A, B}
 ```
 
 
 ### *b)* 
 
 ```
-... Write here your answer ...
+R1 = {A, B, C, D}
+R2 = {D, E}
+R3 = {C, A}
 ```
 
 
 ### *c)* 
 
 ```
-... Write here your answer ...
+R1 = {B, C, D}
+R2 = {D, E}
+R3 = {C, A}
 ```
 
 
