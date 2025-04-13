@@ -6,7 +6,7 @@
 ### *a)*
 
 ```
-... Write here your answer ...
+Está na 1 forma normal porque os atributos são atómicos (simples e indivisíveis) e não suporta relações dentro de relações (Nested Relation)
 It is possible to <u>underline</u> -> {A, B,.. }
 -> R1 (_A_, B, C)
 -> R2 (B,F)
@@ -15,7 +15,8 @@ It is possible to <u>underline</u> -> {A, B,.. }
 ### *b)* 
 
 ```
-... Write here your answer ...
+R1 (_Titulo_Livro_, _Nome_Autor_, Editor, Tipo_Livr, NoPaginas, Ano_Publicacao, Endereco_Editor)
+R2 (_Nome_Autor_, Afiliacao_Autor)
 ```
 
 
@@ -84,24 +85,27 @@ R3 = {_C_, A}
 ### *a)*
 
 ```
-... Write here your answer ...
+(_A_,_B_)
 ```
 
 ### *b)* 
 
 ```
-... Write here your answer ...
+R1 (_A_,_B_, C, D, E)
+R2 (_A_, C, D)
 ```
 
 
 ### *c)* 
 
 ```
-... Write here your answer ...
+R1 (_A_,_B_, E)
+R2 (_A_, C)
+R3 (_C_, D)
 ```
 
 ### *d)* 
 
 ```
-... Write here your answer ...
+Já está.
 ```
