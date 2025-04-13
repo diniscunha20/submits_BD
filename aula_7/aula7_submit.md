@@ -15,7 +15,7 @@ It is possible to <u>underline</u> -> {A, B,.. }
 ### *b)* 
 
 ```
-R1 (_Titulo_Livro_, _Nome_Autor_, Editor, Tipo_Livr, NoPaginas, Ano_Publicacao, Endereco_Editor)
+R1 (_Titulo_Livro_, _Nome_Autor_, Editor, Tipo_Livro, NoPaginas, Ano_Publicacao, Endereco_Editor)
 R2 (_Nome_Autor_, Afiliacao_Autor)
 ```
 
