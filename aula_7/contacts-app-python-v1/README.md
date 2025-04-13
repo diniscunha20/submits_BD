@@ -31,7 +31,7 @@ To run the application, use the following command: `flask run --debug`
 ## Recommended resources
 
 
-
+ python3 -m poetry run flask run
 
 
 
