@@ -6,7 +6,13 @@
 ### *a)*
 
 ```
-... Write here your answer ...
+CREATE PROC remove_employee @ssn int
+AS
+DELETE FROM works_on WHERE works_on.Essn = @ssn
+DELETE FROM dependent_ WHERE dependent_.Essn = @ssn
+UPDATE employee SET Mgr_ssn = NULL WHERE department.Mgr_ssn = @ssn
+UPDATE department SET Super_ssn = NULL WHERE Employee.Super_ssn = @ssn
+DELETE FROM employee WHERE employee.Ssn = @ssn
 ```
 
 ### *b)* 
