@@ -122,23 +122,187 @@ GO
 ### *f)* 
 
 ```
-... Write here your answer ...
+CREATE FUNCTION company.Vencimento_superior_média (@Dno INT)
+RETURNS TABLE
+AS
+RETURN (
+    WITH Media_Salarial AS (
+        SELECT AVG(Salary) AS average
+        FROM company.employee
+        WHERE Dno = @Dno
+    )
+    SELECT 
+        e.Fname, e.Minit, e.Lname, e.Salary, e.Dno
+    FROM company.employee e
+    JOIN Media_Salarial m
+        ON e.Salary > m.average
+    WHERE e.Dno = @Dno
+);
+
+DROP FUNCTION company.Vencimento_superior_média
+
+SELECT * FROM company.Vencimento_superior_média(3);
+
+Select * From company.employee
 ```
 
 ### *g)* 
 
 ```
-... Write here your answer ...
+CREATE FUNCTION company.deptRecordSet (@Dno INT)
+RETURNS @ProjectInfo TABLE (
+    Pname        VARCHAR(32),
+    Pnum         INT,
+    Plocation    VARCHAR(32),
+    Dnum         INT,
+    Budget       DECIMAL(10,2),
+    TotalBudget  DECIMAL(10,2)
+)
+AS
+BEGIN
+    DECLARE 
+        @Pname         VARCHAR(32),
+        @Pnum          INT,
+        @Plocation     VARCHAR(32),
+        @Budget        DECIMAL(10,2),
+        @TotalBudget   DECIMAL(10,2) = 0;
+
+    -- Cursor para iterar pelos projetos do departamento
+    DECLARE project_cursor CURSOR FOR
+        SELECT DISTINCT p.Pname, p.Pnumber, p.Plocation
+        FROM company.Project p
+        WHERE p.Dnum = @Dno;
+
+    OPEN project_cursor;
+    FETCH NEXT FROM project_cursor INTO @Pname, @Pnum, @Plocation;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Calcula o orçamento do projeto com base no salário dos funcionários alocados
+        SELECT 
+            @Budget = ISNULL(SUM((e.Salary / 160.0) * w.Hours_ * 4), 0)
+        FROM 
+            company.Works_on w
+            JOIN company.Employee e ON w.Essn = e.Ssn
+        WHERE 
+            w.Pno = @Pnum;
+
+        -- Atualiza o total acumulado
+        SET @TotalBudget += @Budget;
+
+        -- Insere resultado na tabela de retorno
+        INSERT INTO @ProjectInfo (
+            Pname, Pnum, Plocation, Dnum, Budget, TotalBudget
+        )
+        VALUES (
+            @Pname, @Pnum, @Plocation, @Dno, @Budget, @TotalBudget
+        );
+
+        FETCH NEXT FROM project_cursor INTO @Pname, @Pnum, @Plocation;
+    END
+
+    CLOSE project_cursor;
+    DEALLOCATE project_cursor;
+
+    RETURN;
+END;
+GO
+
+DROP FUNCTION IF EXISTS company.deptRecordSet;
+SELECT * FROM company.deptRecordSet(3);
+
 ```
 
 ### *h)* 
 
 ```
-... Write here your answer ...
+CREATE TRIGGER company.DeleteDepartment
+ON company.Department
+AFTER DELETE
+AS
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA = 'company' AND TABLE_NAME = 'Department_Deleted'
+    )
+    BEGIN
+        CREATE TABLE company.Department_Deleted (
+            Dnumber         INT PRIMARY KEY,
+            Dname           VARCHAR(64),
+            Mgr_ssn         CHAR(9),
+            Mgr_start_date  DATE,
+            DeletedAt       DATETIME DEFAULT GETDATE()
+        );
+    END;
+
+    INSERT INTO company.Department_Deleted (Dnumber, Dname, Mgr_ssn, Mgr_start_sate)
+    SELECT Dnumber, Dname, Mgr_ssn, Mgr_start_sate
+    FROM deleted;
+END;
+GO
+
+Drop Trigger company.DeleteDepartment
+
+Vantagens:
+- Apenas criada se necessário
+- Não interfere no comportamento de exclusão.
+- Mais simples
+
+Desvantagens:
+- A tabela só é criada na primeira exclusão, o que pode não ser o ideal.
+
+CREATE TRIGGER company.DeleteDepartment
+ON company.Department
+INSTEAD OF DELETE
+AS
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA = 'company' AND TABLE_NAME = 'Department_Deleted'
+    )
+    BEGIN
+        CREATE TABLE company.Department_Deleted (
+            Dnumber         INT PRIMARY KEY,
+            Dname           VARCHAR(64),
+            Mgr_ssn         CHAR(9),
+            Mgr_start_date  DATE,
+            DeletedAt       DATETIME DEFAULT GETDATE()
+        );
+    END;
+
+    INSERT INTO company.Department_Deleted (Dnumber, Dname, Mgr_ssn, Mgr_start_date)
+    SELECT Dnumber, Dname, Mgr_ssn, Mgr_start_date
+    FROM deleted;
+
+    PRINT 'Delete bloqueado: dados movidos para tabela de auditoria.';
+END;
+GO
+
+Vantagens:
+- Soft delete
+
+Desvantagens:
+- Mais complexo e confuso já que os dados não são realmente removidos
+
+
 ```
 
 ### *i)* 
 
 ```
-... Write here your answer ...
+UDF:
+Vantagens:
+- Flexível, podendo ser incorporada diretamente dentro de expressões SQL
+- Facilmente reutilizável, encapsulando toda a lógica
+Desvantagens:
+- Limitado em transações e estruturas de fluxo complexas
+
+Stored Procedures:
+Vantagens:
+- Melhor performance, com pré compolação
+- Podem controlar o acesso aos dados, ao conceder permissões de execução sem necessariamente dar acesso direto às tabelas
+Desvantagens:
+- Não podem ser usadas diretamente dentro de expressões SQL como as UDFs
 ```
